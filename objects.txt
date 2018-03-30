@@ -1,0 +1,19 @@
+Format y,x, h, w
+BlueSwitch: 182,288,319,113
+BlueCube1: 181, 404, 28, 28
+BlueCube2: 241, 404, 28, 28
+BlueCube3: 299, 404, 28, 28
+BlueCube4: 358, 404, 28, 28
+BlueCube5: 415, 404, 28, 28
+BlueCube6: 474, 404, 28, 28
+Scale_RectanglePortion: 204, 540, 276, 259
+Scale_Input1: 155, 621, 49, 98
+Scale_Input2: 480, 620, 49, 98
+RedSwitch: 183, 934, 317, 113
+RedCube1: 181, 903, 28, 28
+RedCube2: 240, 903, 28, 28
+RedCube3: 299, 903, 28, 28
+RedCube4: 356, 903, 28, 28
+RedCube5: 415, 903, 28, 28
+RedCube6: 474, 903, 28, 28
+Start: 298, 0, 30, 30

@@ -85,9 +85,10 @@ class RobotDrive:
     def adjustGripperCenter(self):
         self.gripper_center[0] = self.robotSprite[0] + self.gripper_radius*np.sin(self.angle*np.pi/180)
         self.gripper_center[1] = self.robotSprite[1] - self.gripper_radius*np.cos(self.angle*np.pi/180)
-        #if(self.target_attached):
-        #    global target_mid
-        #    target_mid = self.gripper_center
+        if(self.target_attached and self.target != None):
+            coords = self.targetRectCoordinates()
+            initObstacles.obstacles['Cube'][self.target][0] = coords
+            initObstacles.obstacles['Cube'][self.target][1] = self.gripper_center
 
     def rotate(self, angle):
         self.angle = angle%360
@@ -126,10 +127,10 @@ class RobotDrive:
         pygame.draw.circle(screen, BLUE,int_array(left_end) , int(0.25*self.gripper_len), 1)
         pygame.draw.circle(screen, BLUE,int_array(right_end), int(0.25*self.gripper_len), 1)
         pygame.draw.line(screen, RED, self.gripper_center, self.gripper_center, 3)
-        if(self.target_attached and self.target != None):
+        """if(self.target_attached and self.target != None):
             coords = self.targetRectCoordinates()
             initObstacles.obstacles['Cube'][self.target][0] = coords
-            initObstacles.obstacles['Cube'][self.target][1] = self.gripper_center
+            initObstacles.obstacles['Cube'][self.target][1] = self.gripper_center"""
 
     def resetEncoder(self):
         self.encoder = 0
@@ -144,7 +145,7 @@ class RobotDrive:
 
     def autoTurn(self, target):
         target = target%360
-        if(abs(self.angle - target) > 2):
+        if(abs(self.angle - target) > 5):
             sign = (target - self.angle)/abs(target - self.angle)
             self.rotate(self.angle + sign*10)
             return False
@@ -153,8 +154,7 @@ class RobotDrive:
 
 class AutoPathFollower:
     def __init__(self, chassis, screen):
-        #self.tasks = ['T0', 'F50', 'T60', 'F50', 'F-50', 'T210']
-        self.tasks = ['T0']
+        self.tasks = ['T57', 'F332', 'T90', 'F197', 'T180', 'F181']
         self.chassis = chassis
         self.screen = screen
 

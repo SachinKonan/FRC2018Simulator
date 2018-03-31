@@ -27,15 +27,13 @@ def displayObstacles(obstacles, screen, color_matter = True):
 def distance_calculator(robot_mid, target_mid):
     return np.sqrt((target_mid[0]- robot_mid[0])**2 +  (target_mid[1]- robot_mid[1])**2)
 
-def instant_distancetoObstacles(robot, obstacles, threshold):
-    robot_mid = robot.robotSprite
+def instant_distancetoObstacles(robot_mid, obstacles, threshold):
     distances = list(map(lambda x: [x, distance_calculator(robot_mid, getMidpoint(obstacles['Switch'][x][1:]))] ,obstacles['Switch'].keys())) +  list(map(lambda x: [x, distance_calculator(robot_mid, getMidpoint(obstacles['Scale'][x][1:]))] ,obstacles['Scale'].keys()))
     s = sorted(distances, key = lambda x: x[1])
     id = s[0][0]
     return obstacles['Switch' if 'Switch' in id else 'Scale'][id]
 
-def instant_distancetoCubes(robot, obstacles, threshold):
-    robot_mid = robot.robotSprite
+def instant_distancetoCubes(robot_mid, obstacles, threshold):
     distances = list(map(lambda x: [x, distance_calculator(robot_mid, obstacles['Cube'][x][1])] ,obstacles['Cube'].keys()))
     s = sorted(distances, key = lambda x: x[1])
     return obstacles['Cube'][s[0][0]], s[0][0]
@@ -62,7 +60,7 @@ height_inc = 10
 start = initObstacles.start
 
 chassis = RobotDrive(x_mid = start[0], y_mid=start[1], w= start[2], h = start[3], Gripper = True)
-chassis.angle = 90
+#chassis.rotate(90)
 auto = AutoPathFollower(chassis, screen)
 done = False
 
@@ -73,8 +71,9 @@ while(not done):
     obstacles = initObstacles.obstacles
     screen.fill(WHITE)
     bool = auto.autoPeriodic()
+    keys=pygame.key.get_pressed()
+
     if(bool):
-        keys=pygame.key.get_pressed()
         angle = chassis.angle
         if keys[pygame.K_RIGHT]:
             angle += inc
@@ -94,12 +93,14 @@ while(not done):
                 angle +=  0#(np.random.rand()*2 - 1)*1
             else:
                 chassis.translate(height_inc)
-        if keys[pygame.K_d] and chassis.target_attached:
-            chassis.detachTarget()
-
+        #angle += (np.random.rand()*2 - 1)*20
         chassis.rotate(angle)
 
-    min_cube, id = instant_distancetoCubes(chassis, obstacles, chassis.getTotalLen())
+    if keys[pygame.K_d] and chassis.target_attached:
+        chassis.detachTarget()
+
+    min_cube, id = instant_distancetoCubes(chassis.robotSprite, obstacles, chassis.getTotalLen())
+    #print(id)
     if(distance_calculator(chassis.robotSprite, min_cube[1]) < 20 and chassis.target_attached == False):
         chassis.setTarget(id)
 

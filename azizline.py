@@ -13,6 +13,8 @@ coords = [[15, 313], [15, 313]]
 end = []
 RED  = (0, 0, 255)
 BLUE = (255,0,0 )
+robot_side = 80
+
 def lineDrawer(img, x):
     if(len(x) == 1):
         return
@@ -52,6 +54,21 @@ def eventHandler(event, x, y, k, s):
         end = (x[-1][0], x[-1][1])
         cv2.line(imgcopy, start, start, BLUE, 5)
         cv2.line(imgcopy, end, end, BLUE, 5)
+        dx = end[0] - start[0]
+        dy = end[1] - start[1]
+        pot_angle = angle(dy,dx)
+        first = (pot_angle + 90)
+        second = (pot_angle - 90)
+        start_bottom = (start[0] + int(0.5*robot_side*np.sin(first*np.pi/180)), start[1] - int(0.5*robot_side*np.cos(first*np.pi/180)))
+        end_bottom = (end[0] + int(0.5*robot_side*np.sin(first*np.pi/180)), end[1] - int(0.5*robot_side*np.cos(first*np.pi/180)))
+
+        start_top = (start[0] + int(0.5*robot_side*np.sin(second*np.pi/180)), start[1] - int(0.5*robot_side*np.cos(second*np.pi/180)))
+        end_top = (end[0] + int(0.5*robot_side*np.sin(second*np.pi/180)), end[1] - int(0.5*robot_side*np.cos(second*np.pi/180)))
+
+        cv2.line(imgcopy, start_bottom, end_bottom , 1 )
+        cv2.line(imgcopy, start_top, end_top , 1 )
+        cv2.line(imgcopy, start, start_top , 1 )
+        cv2.line(imgcopy, start, start_bottom , 1 )
         cv2.line(imgcopy, start, end, RED, 1)
         x.pop(-1)
 

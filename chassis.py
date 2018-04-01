@@ -154,7 +154,7 @@ class RobotDrive:
 
 class AutoPathFollower:
     def __init__(self, chassis, screen):
-        self.tasks = ['T57', 'F332', 'T90', 'F197', 'T180', 'F181']
+        self.tasks = ['T53', 'F336', 'T90', 'F187', 'T179', 'F236']
         self.chassis = chassis
         self.screen = screen
 

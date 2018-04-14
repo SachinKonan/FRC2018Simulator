@@ -4,7 +4,7 @@ from utilutils import getPolygon_Mid_RadiusAngle_Info
 
 os.chdir(os.path.dirname(os.path.realpath(__file__)))
 
-parser = lambda x: list(map(lambda y: int(y), x))
+parser = lambda x: list(map(lambda y: float(y), x))
 
 def fileReader(filename):
     f = open(filename, 'r')
@@ -42,10 +42,13 @@ def fileReader(filename):
             else:
                 obstacles['Scale'][id] = [BLACK, numbers[1], numbers[0], numbers[3], numbers[2]]
         if('Switch' in id):
-            c = RED
-            if('Blue' in id):
-                c = BLUE
-            obstacles['Switch'][id] = [c,numbers[1], numbers[0], numbers[3], numbers[2]]
+            if('Top' in id or 'Bottom' in id):
+                obstacles['Switch'][id] = [BLACK, numbers[1], numbers[0], numbers[3], numbers[2]]
+            else:
+                c = RED
+                if('Blue' in id):
+                    c = BLUE
+                obstacles['Switch'][id] = [c,numbers[1], numbers[0], numbers[3], numbers[2]]
         if('Start' in id):
             placeholder = [numbers[1], numbers[0], numbers[3], numbers[2]]
             start = [placeholder[0] + placeholder[2]/2, placeholder[1] + placeholder[3]/2, placeholder[2], placeholder[3]]

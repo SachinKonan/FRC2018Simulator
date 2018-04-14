@@ -1,19 +1,23 @@
 Format y,x, h, w
-BlueSwitch: 182,288,319,113
-BlueCube1: 181, 404, 28, 28
-BlueCube2: 241, 404, 28, 28
-BlueCube3: 299, 404, 28, 28
-BlueCube4: 358, 404, 28, 28
-BlueCube5: 415, 404, 28, 28
-BlueCube6: 474, 404, 28, 28
-Scale_RectanglePortion: 204, 540, 276, 259
+BlueSwitch: 181, 287, 320, 114
+BlueCube1: 181, 404, 26, 26
+BlueCube2: 240, 404, 26, 26
+BlueCube3: 299, 404, 26, 26
+BlueCube4: 358, 404, 26, 26
+BlueCube5: 415, 404, 26, 26
+BlueCube6: 474, 404, 26, 26
+Scale_RectanglePortion: 206, 537, 271, 261
 Scale_Input1: 155, 621, 49, 98
 Scale_Input2: 480, 620, 49, 98
-RedSwitch: 183, 934, 317, 113
-RedCube1: 181, 903, 28, 28
-RedCube2: 240, 903, 28, 28
-RedCube3: 299, 903, 28, 28
-RedCube4: 356, 903, 28, 28
-RedCube5: 415, 903, 28, 28
-RedCube6: 474, 903, 28, 28
-Start: 298, 0, 30, 30
+RedSwitch: 181, 934, 320, 114
+RedCube1: 181, 903, 26, 26
+RedCube2: 240, 903, 26, 26
+RedCube3: 299, 903, 26, 26
+RedCube4: 356, 903, 26, 26
+RedCube5: 415, 903, 26, 26
+RedCube6: 474, 903, 26, 26
+RedSwitchTop: 181, 287, 87, 114
+RedSwitchBottom: 415, 287, 87, 114
+BlueSwitchTop: 181, 934, 87, 114
+BlueSwitchBottom: 415,934, 87, 114
+Start: 279, 28, 77, 67

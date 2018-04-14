@@ -9,8 +9,8 @@ import initObstacles
 os.chdir(os.path.dirname(os.path.realpath(__file__)))
 
 class RobotDrive:
-    def __init__(self,x_mid,y_mid, w, h, Gripper = False):
-        self.h = h
+    def __init__(self,x_mid,y_mid, w, h, Gripper = False, startCube = True):
+        self.h = h*0.65
         self.w = w
         #assumes that angle rotations happen around the center of the robot, which is the case for a differential drive
         self.robotSprite = [x_mid,y_mid]
@@ -19,13 +19,20 @@ class RobotDrive:
         self.angle = 0
         self.gripper = Gripper
         if(self.gripper):
-            self.gripper_len = 0.35*self.h
-            self.gripper_width = self.w
+            self.gripper_len = 0.30*h
+            #self.gripper_width = self.w
+            self.gripper_width = 26
             self.gripper_radius = self.h/2  + self.gripper_len/2
             self.gripper_center = [self.robotSprite[0], self.robotSprite[1] - self.gripper_radius ]
             self.target_attached = False
             self.target = None
 
+        if(startCube):
+            self.target_attached = True
+            self.target = 'RobotCube'
+            initObstacles.obstacles['Cube'][self.target] = initObstacles.obstacles['Cube']['RedCube1']
+            initObstacles.obstacles['Cube'][self.target][0] = self.targetRectCoordinates()
+            initObstacles.obstacles['Cube'][self.target][1] = self.gripper_center
         self.encoder = 0
 
     def getTotalLen(self):
@@ -124,8 +131,8 @@ class RobotDrive:
         pygame.draw.line(screen, GREEN, left_start,right_start, 2)
         pygame.draw.line(screen, GREEN, left_start,left_end, 2)
         pygame.draw.line(screen, GREEN, right_start,right_end, 2)
-        pygame.draw.circle(screen, BLUE,int_array(left_end) , int(0.25*self.gripper_len), 1)
-        pygame.draw.circle(screen, BLUE,int_array(right_end), int(0.25*self.gripper_len), 1)
+        pygame.draw.circle(screen, BLUE,int_array(left_end) , int(0.05*self.h), 1)
+        pygame.draw.circle(screen, BLUE,int_array(right_end), int(0.05*self.h), 1)
         pygame.draw.line(screen, RED, self.gripper_center, self.gripper_center, 3)
         """if(self.target_attached and self.target != None):
             coords = self.targetRectCoordinates()
@@ -136,25 +143,27 @@ class RobotDrive:
         self.encoder = 0
 
     def autoDrive(self, target):
-        if(abs(self.encoder - target) > 2):
+        if(abs(self.encoder - target) > 0.5):
             sign = (target - self.encoder)/abs(target - self.encoder)
-            self.translate(sign*4)
+            self.translate(sign*abs(target - self.encoder)/target *20)
             return False
         else:
             return True
 
     def autoTurn(self, target):
         target = target%360
-        if(abs(self.angle - target) > 5):
+        if(abs(self.angle - target) > 0.1):
             sign = (target - self.angle)/abs(target - self.angle)
-            self.rotate(self.angle + sign*10)
+            self.rotate(self.angle + sign*abs(target-self.angle))
             return False
         else:
             return True
 
 class AutoPathFollower:
-    def __init__(self, chassis, screen):
-        self.tasks = ['T53', 'F336', 'T90', 'F187', 'T179', 'F236']
+    def __init__(self, chassis, screen, t):
+        self.tasks = t
+        if(len(self.tasks) <= 2):
+            raise Exception('Your task length is not long enough')
         self.chassis = chassis
         self.screen = screen
 

@@ -9,11 +9,19 @@ imgname = 'resized_game.png'
 img = cv2.imread(imgname)
 print('Shape', img.shape)
 imgcopy = img
-coords = [[15, 313], [15, 313]]
+coords = [[40, 95], [40, 95]]
 end = []
 RED  = (0, 0, 255)
 BLUE = (255,0,0 )
-robot_side = 80
+"""These should be in inches"""
+real_robot_side = 33.5
+real_robot_len = 38.5
+
+robot_side = real_robot_side*2
+robot_len = real_robot_len*2
+
+base_angle = np.arctan((robot_len/2)/(robot_side/2))*180/np.pi
+target_radius = np.sqrt((robot_side/2)**2 + (robot_len/2)**2)
 
 def lineDrawer(img, x):
     if(len(x) == 1):
@@ -24,17 +32,23 @@ def lineDrawer(img, x):
     x.pop(-1)
     lineDrawer(img, x)
 
-def recurseRobotInstructions(coords, robotcoords = []):
+def recurseRobotInstructions(coords, robotcoords = [], robot_scaledcoords = []):
     if(len(coords) == 1):
-        return robotcoords
+        return robotcoords, robot_scaledcoords
     start = coords[0]
     end = coords[1]
     dx = end[0] - start[0]
     dy = end[1] - start[1]
     pot_angle = angle(dy,dx)
     distance = np.sqrt((dx)**2 + (dy)**2)
-    robotcoords.append('T%s' %(int(pot_angle)))
-    robotcoords.append('F%s' %(int(distance)))
+    robotcoords.append('T%s' %(round(pot_angle,2)))
+    robotcoords.append('F%s' %(round(distance,2)))
+
+    sdx = dx/2
+    sdy = dy/2
+    sdistance = np.sqrt((sdx)**2 + (sdy)**2)
+    robot_scaledcoords.append('T%s' %(round(pot_angle,2)))
+    robot_scaledcoords.append('F%s' %(round(sdistance,2)))
     coords.pop(0)
     return recurseRobotInstructions(coords, robotcoords)
 
@@ -42,9 +56,16 @@ def eventHandler(event, x, y, k, s):
     global imgcopy, img, coords
     imgcopy = img.copy()
     if(event == cv2.EVENT_LBUTTONDOWN):
-        coords.append([x,y])
+        if(len(coords) == 0):
+            coords.append([x,y])
+            coords.append([x,y])
+        else:
+            coords.append([x,y])
     elif(event == cv2.EVENT_MOUSEMOVE):
-        coords[-1] = [x,y]
+        if(len(coords) >= 2):
+            coords[-1] = [x,y]
+        else:
+            pass
     else:
         pass
 
@@ -57,18 +78,18 @@ def eventHandler(event, x, y, k, s):
         dx = end[0] - start[0]
         dy = end[1] - start[1]
         pot_angle = angle(dy,dx)
-        first = (pot_angle + 90)
-        second = (pot_angle - 90)
-        start_bottom = (start[0] + int(0.5*robot_side*np.sin(first*np.pi/180)), start[1] - int(0.5*robot_side*np.cos(first*np.pi/180)))
-        end_bottom = (end[0] + int(0.5*robot_side*np.sin(first*np.pi/180)), end[1] - int(0.5*robot_side*np.cos(first*np.pi/180)))
+        angle1 = base_angle - pot_angle
+        angle2 = base_angle + pot_angle
+        start_bottom = (start[0] - int(target_radius*np.cos(np.pi*angle1/180)), start[1] + int(target_radius*np.sin(np.pi*angle1/180)))
+        start_top = (end[0]  - int(target_radius*np.cos(np.pi*angle2/180)), end[1] - int(target_radius*np.sin(np.pi*angle2/180)))
 
-        start_top = (start[0] + int(0.5*robot_side*np.sin(second*np.pi/180)), start[1] - int(0.5*robot_side*np.cos(second*np.pi/180)))
-        end_top = (end[0] + int(0.5*robot_side*np.sin(second*np.pi/180)), end[1] - int(0.5*robot_side*np.cos(second*np.pi/180)))
+        end_bottom = (start[0]  + int(target_radius*np.cos(np.pi*angle2/180)), start[1] + int(target_radius*np.sin(np.pi*angle2/180)))
+        end_top = (end[0] + int(target_radius*np.cos(np.pi*angle1/180)), end[1]- int(target_radius*np.sin(np.pi*angle1/180)))
 
-        cv2.line(imgcopy, start_bottom, end_bottom , 1 )
-        cv2.line(imgcopy, start_top, end_top , 1 )
-        cv2.line(imgcopy, start, start_top , 1 )
-        cv2.line(imgcopy, start, start_bottom , 1 )
+        cv2.line(imgcopy, start_bottom, start_top ,BLUE, 1 )
+        cv2.line(imgcopy, end_bottom, end_top ,BLUE, 1 )
+        cv2.line(imgcopy, start_bottom, end_bottom ,BLUE, 1 )
+        cv2.line(imgcopy, start_top, end_top ,BLUE, 1 )
         cv2.line(imgcopy, start, end, RED, 1)
         x.pop(-1)
 

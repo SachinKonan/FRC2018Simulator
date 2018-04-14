@@ -21,6 +21,12 @@ pip install pygame
 pip install numpy
 ```
 
+## Run Demo
+
+```
+python simulator_game.py
+```
+
 ## Generating Auto Paths
 
 There are a list of provided paths in the paths.txt file which can attach the scale or switch from any placement on the field (Left, Middle, Right). To generate custom paths, first edit the side and width lengths of the robot in azizline.py:

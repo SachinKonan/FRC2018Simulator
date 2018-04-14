@@ -9,7 +9,7 @@ imgname = 'resized_game.png'
 img = cv2.imread(imgname)
 print('Shape', img.shape)
 imgcopy = img
-coords = [[40, 95], [40, 95]]
+coords = []
 end = []
 RED  = (0, 0, 255)
 BLUE = (255,0,0 )

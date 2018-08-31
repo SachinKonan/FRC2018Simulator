@@ -1,4 +1,8 @@
 import numpy as np
+from utilutils import *
+import os
+
+os.chdir(os.path.dirname(os.path.realpath(__file__)))
 
 def collide(p1, p2):
     '''
@@ -94,3 +98,18 @@ def checkOutofBounds(robot, field):
     if(min(x) < 0 or max(x) > field[0] or min(y) < 0 or max(y) > field[1]):
         return True
     return False
+
+def checkObstacles(coords, obstacles):
+    k = ['Switch', 'Scale']
+    for i in k:
+        for j in obstacles[i].keys():
+            collided = collide(coords, getPolygon(obstacles[i][j][1:]) )
+            if(collided):
+                return False, j
+    return True, None
+
+def check1Obstacle(coords, obj):
+    collided = collide(coords, getPolygon(obj[1:]) )
+    if(collided):
+        return False
+    return True

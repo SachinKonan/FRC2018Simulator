@@ -77,14 +77,14 @@ inc = 10
 height_inc = 10
 
 start = initObstacles.start
-tasks = ['T90.0', 'F306.0', 'T180.0', 'F43.0']
+tasks = ['T90.0', ]
 path =  [[40, 95], [346, 95], [346, 138], [346, 138]]
 real_start = [path[0][0], path[0][1], start[2], start[3]]
 chassis = RobotDrive(x_mid = real_start[0], y_mid=real_start[1], w= real_start[2], h = real_start[3], Gripper = True, startCube = True)
 #chassis.rotate(90)
 auto = AutoPathFollower(chassis, screen, tasks)
 done = False
-
+print(initObstacles.obstacles)
 while(not done):
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -132,6 +132,9 @@ while(not done):
                 else:
                     print(False)
                 chassis.translate(height_inc)
+        #print(list(map(lambda x: x[0], chassis.moveOptions())))
+        print(chassis.moveOptions())
+        chassis.moveOptions()
         chassis.rotate(angle)
     else:
         showPath(screen, path.copy())
